@@ -1,19 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  final Directory tempDir = await getTemporaryDirectory();
-  print("tempDir: $tempDir");
-
-  final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
-  print("appDocumentsDir: $appDocumentsDir");
-
-  final Directory? downloadsDir = await getDownloadsDirectory();
-  print("downloadsDir: $downloadsDir");
 
   runApp(MyApp());
 }
