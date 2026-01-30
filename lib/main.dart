@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,11 +34,22 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> notes = [];
 
   void _addNote() {
-    controller.text.trim();
+    final String note = controller.text.trim();
+    if (note.isEmpty) return;
     setState(() {
-      notes.add(controller.text.trim());
+      notes.add(note);
       controller.clear();
     });
+
+    _saveNotes();
+  }
+
+  _saveNotes() async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String path = '${directory.path}/ notes.json';
+    final File file = File(path);
+
+    await file.writeAsString(jsonEncode(notes));
   }
 
   @override
