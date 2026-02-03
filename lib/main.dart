@@ -33,6 +33,32 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController controller = TextEditingController();
   List<String> notes = [];
 
+  @override
+  void initState() {
+    super.initState();
+
+    _loadNotes();
+  }
+
+  Future<File> _getFileNotes() async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String path = '${directory.path}/ notes.json';
+    return File(path);
+  }
+
+  void _loadNotes() async {
+    final File file = await _getFileNotes();
+    if (!await file.exists()) {
+      notes = [];
+    } else {
+      final result = await file.readAsString();
+      final decoded = jsonDecode(result);
+      setState(() {
+        notes = List<String>.from(decoded as List);
+      });
+    }
+  }
+
   void _addNote() {
     final String note = controller.text.trim();
     if (note.isEmpty) return;
@@ -44,10 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _saveNotes();
   }
 
-  _saveNotes() async {
-    final Directory directory = await getApplicationDocumentsDirectory();
-    final String path = '${directory.path}/ notes.json';
-    final File file = File(path);
+  void _saveNotes() async {
+    final File file = await _getFileNotes();
 
     await file.writeAsString(jsonEncode(notes));
   }
